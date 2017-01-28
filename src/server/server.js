@@ -1,7 +1,30 @@
-const bleh = "whoa";
-console.log(`hello ${bleh}`);
+import express from 'express';
+import http from 'http';
 
-const obj = { hey: 1 };
-const obj2 = { ...obj, bleh: 2 };
-console.log(obj2);
-console.log('meow');
+import { isDevelopment } from './settings';
+
+// ---------------------------
+// Setup
+const app = express();
+const server = new http.Server(app);
+// ---------------------------
+// Config
+app.set("view engine", "pug");
+app.use(express.static("public"));
+
+const useExternalStyles = !isDevelopment;
+const scriptRoot = isDevelopment ? "http://localhost:8080/build" : "/build";
+
+app.get('*', (req, res) => {
+	res.render('index', {
+		useExternalStyles,
+		scriptRoot
+	});
+});
+
+// ---------------------------
+// Startup
+const port = process.env.PORT || 3000;
+server.listen(port, () => {
+	console.log(`Started http server on port ${port}`);
+});

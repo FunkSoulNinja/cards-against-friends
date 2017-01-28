@@ -1,8 +1,48 @@
 import gulp from 'gulp';
 import path from 'path';
 import rimraf from 'rimraf';
+import child_process from 'child_process';
+import webpack from 'webpack';
+import WebpackDevServer from 'webpack-dev-server';
+import webpackConfig from './webpack.config.js';
 
+
+// ------------------------------
+// Server
 const $ = require('gulp-load-plugins')();
+
+gulp.task('server:clean', (cb) => {
+	rimraf('./build', () => cb());
+});
+
+gulp.task("server:build", gulp.series('server:clean', compileServer));
+
+gulp.task('server:watch', gulp.series('server:build', watchServer));
+
+gulp.task('server:dev', gulp.series('server:build', gulp.parallel(
+	watchServer,
+	runServer)
+));
+
+gulp.task("server:test", gulp.series("server:build", testServer));
+
+gulp.task("server:test:dev", gulp.series("server:build", gulp.parallel(
+	watchServer,
+	runServerTests
+)));
+
+function testServer(cb) {
+	child_process.exec("node ./tests.js", (err, stdout, stderr) => {
+		console.log(stdout);
+		console.log(stderr);
+
+		if (err) {
+			cb(new $.util.PluginError("testServer", "Tests failded"));
+		} else {
+			cb();
+		}
+	});
+}
 
 function compileServer() {
 	return gulp.src('./src/server/**/*.js')
@@ -14,28 +54,67 @@ function compileServer() {
 		.on('error', () => {});
 }
 
+function runServer() {
+	return $.nodemon({
+		script: './server.js',
+		watch: 'build',
+		ignore: ["**/__tests"]
+	});
+}
+
 function watchServer() {
-	return gulp.watch('./src/server/**/*.js', compileServer)
+	return gulp.watch('./src/server/**/*.js', gulp.series(compileServer))
 		.on('error', () => {});
 }
 
-gulp.task('server:clean', (cb) => {
-	rimraf('./build', () => cb());
+function runServerTests() {
+	return $.nodemon({
+		script: './tests.js',
+		watch: 'build'
+	});
+}
+
+// ---------------------
+// Client
+const consoleStats = {
+	colors: true,
+	exclude: ["node_modules"],
+	chunks: false,
+	assets: false,
+	timings: true,
+	modules: false,
+	hash: false,
+	version: false
+};
+gulp.task("client:clean", cb => {
+	rimraf("./public/build", () => cb());
 });
+gulp.task("client:build", gulp.series("client:clean", buildClient));
+gulp.task("client:dev", gulp.series("client:clean", watchClient));
 
-gulp.task("server:build",
-	gulp.series('server:clean', compileServer));
+function buildClient(cb) {
+	webpack(webpackConfig, (err, stats) => {
+		if (err) {
+			cb(err);
+			return;
+		}
 
-gulp.task('server:watch',
-	gulp.series('server:build', watchServer
-		));
+		console.log(stats.toString(consoleStats));
+		cb();
+	});
+}
 
-gulp.task('server:dev', gulp.series(
-	'server:build', gulp.parallel(
-		watchServer, function nodemon() {
-			$.nodemon({
-				script: './server.js',
-				watch: 'build'
-			});
-		})
-));
+function watchClient() {
+	const compiler = webpack(webpackConfig);
+	const server = new WebpackDevServer(compiler, {
+		publicPath: '/build/',
+		hot: true,
+		stats: consoleStats
+	});
+
+	server.listen(8080, () => {});
+}
+// -------------------
+// Other Tasks
+gulp.task("dev", gulp.parallel("server:dev", "client:dev"));
+gulp.task("build", gulp.parallel("server:build", "client:build"));
