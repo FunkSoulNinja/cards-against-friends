@@ -5,36 +5,31 @@ import { ContainerBase } from '../lib/component';
 import Chat from './chat';
 
 class LobbyContainer extends ContainerBase {
-	joinGame(game) {
-		console.log(`Todo: join game ${game.title}`);
+	constructor(props) {
+		super(props);
+
+		this._joinGame = (game) => this.request(A.gameJoin(game.id));
+		this._sendMessage = (message) => this.request(A.lobbySendMessage(message));
 	}
 
-	sendMessage(message) {
-		console.log(`Sending ${message}`);
+	componentWillMount() {
+		const { stores: { lobby, app } } = this.context;
+		this.subscribe(lobby.opSendMessage$, opSendMessage => this.setState({ opSendMessage }));
+		this.subscribe(lobby.view$, lobby => this.setState({ lobby }));
+		this.subscribe(app.reconnected$, () => this.request(A.lobbyJoin()));
+
+		this.request(A.lobbyJoin());
 	}
+
 	render() {
-		const games = [
-			{ title: "Game 1", id: 1, players: ["one", "two", "three"] },
-			{ title: "Game 2", id: 2, players: ["one", "two", "three"] },
-			{ title: "Game 3", id: 3, players: ["one", "two", "three"] },
-			{ title: "Game 4", id: 4, players: ["one", "two", "three"] }
-		];
-
-		const opSendMessage = { can: true, inProgress: false };
-		const messages = [
-			{ index: 1, name: "Person", message: "blegh" },
-			{ index: 2, name: "Yesmon", message: "lkjsdf" },
-			{ index: 3, name: "Uzimon", message: "Ping" },
-			{ index: 4, name: "Ana", message: "mhm" },
-			{ index: 5, name: "Jose", message: "blegh" }
-		];
+		const { lobby: { games, messages }, opSendMessage } = this.state;
 		return (
 			<div className="c-lobby">
-				<GameList games={games} joinGame={this.joinGame.bind(this)} />
+				<GameList games={games} joinGame={this._joinGame} />
 				<Chat
 					messages={messages}
 					opSendMessage={opSendMessage}
-					sendMessage={this.sendMessage.bind(this)}
+					sendMessage={this._sendMessage}
 				/>
 			</div>
 		);
@@ -42,26 +37,29 @@ class LobbyContainer extends ContainerBase {
 }
 
 class LobbySidebar extends ContainerBase {
-	login() {
-		this.dispatch(A.dialogSet(A.DIALOG_LOGIN, true));
+	constructor(props) {
+		super(props);
+
+		this._login = () => this.dispatch(A.dialogSet(A.DIALOG_LOGIN, true));
+		this._createGame = () => this.request(A.gameCreate());
 	}
 
-	createGame() {
-		console.log("Todo: Create game");
+	componentWillMount() {
+		const { stores: { user, game } } = this.context;
+		this.subscribe(user.opLogin$, opLogin => this.setState({ opLogin }));
+		this.subscribe(game.opCreateGame$, opCreateGame => this.setState({ opCreateGame }));
 	}
 	render() {
-		const canLogin = true;
-		const canCreateGame = true;
-		const createGameInProgress = false;
+		const { opLogin, opCreateGame } = this.state;
 		return (
 			<section className="c-lobby-sidebar">
 				<div className="m-sidebar-buttons">
-					{!canLogin ? null : <button onClick={() => this.login()} className="m-button primary">Login</button>}
+					{!opLogin.can ? null : <button onClick={this._login} className="m-button primary">Login</button>}
 
-					{!canCreateGame ?
+					{!opCreateGame.can ?
 						null : <button
-									onClick={this.createGame.bind(this)}
-									disabled={createGameInProgress}
+									onClick={this._createGame}
+									disabled={opCreateGame.inProgress}
 									className="m-button good">
 									Create Game
 								</button>}

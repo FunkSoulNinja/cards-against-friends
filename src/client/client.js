@@ -8,7 +8,6 @@ import * as A from './actions';
 import { StoreProvider } from './lib/component';
 import { Dispatcher } from 'shared/dispatcher';
 import createStores from './stores';
-
 // ------------
 // Services
 const dispatcher = new Dispatcher();
@@ -51,9 +50,9 @@ function printAction(action) {
 	if (action.hasOwnProperty("status")) {
 		let style = null;
 		switch (action.status) {
-			case A.STATUS_REQUEST: return style = "color: blue";
-			case A.STATUS_FAIL: return style = "color: red";
-			case A.STATUS_SUCCESS: return style = "color: green";
+			case A.STATUS_REQUEST: style = "color: blue"; break;
+			case A.STATUS_FAIL: style = "color: red"; break;
+			case A.STATUS_SUCCESS: style = "color: green"; break;
 		}
 
 		console.log(`%c${action.type}`, `${style}; font-weight: bold; background #eee; width: 100%; display: block;`);

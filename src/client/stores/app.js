@@ -1,5 +1,6 @@
 import * as A from '../actions';
 import _ from 'lodash';
+import { Observable, BehaviorSubject } from 'rxjs';
 
 export default class AppStore {
 	constructor({ dispatcher }) {
@@ -18,5 +19,8 @@ export default class AppStore {
 		.publishReplay(1);
 
 	this.dialogs$.connect();
+
+	this.connection$ = new BehaviorSubject(A.CONNECTION_CONNECTED);
+	this.reconnected$ = Observable.empty();
 	}
 }

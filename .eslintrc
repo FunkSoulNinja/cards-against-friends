@@ -25,9 +25,10 @@
         "no-shadow": 0,
         "no-prototype-builtins": 0,
         "no-unused-vars": 1,
-        "import/no-unresolved": 0,
+        "import/no-unresolved": 1,
         "import/no-extraneous-dependencies": 0,
-        "default-case": 0
+        "default-case": 0,
+        "radix": 0
         },
     "env": {
         "browser": true,

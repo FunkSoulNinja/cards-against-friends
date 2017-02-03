@@ -17,7 +17,9 @@ export class Dispatcher {
 			return () => unreg.forEach(unsub => unsub());
 		}
 
-		if (!_.isFunction(callback)) throw new Error("callback must be of type function");
+		if (!_.isFunction(callback)) {
+			throw new Error("callback must be of type function");
+		}
 
 		const type = typeOrCallbacks;
 		const handler = { statusFilter, callback };

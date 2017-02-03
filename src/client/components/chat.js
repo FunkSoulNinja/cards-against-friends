@@ -36,6 +36,7 @@ export default class Chat extends Component {
 
 		const newIndex = messages[messages.length - 1].index;
 		if (this._lastIndex === newIndex) return;
+
 		this._messages.scrollTop = this._messages.scrollHeight;
 		this._lastIndex = newIndex;
 	}
@@ -44,7 +45,7 @@ export default class Chat extends Component {
 		const { messages, opSendMessage } = this.props;
 		return (
 			<section className="c-chat">
-				<ul className="messages" ref={c => this.messages = c}>
+				<ul className="messages" ref={c => this._messages = c}>
 					{messages.map(message =>
 					<li key={message.index}>
 						<span className="author">{message.name}</span>
