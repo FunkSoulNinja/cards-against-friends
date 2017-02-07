@@ -5,6 +5,7 @@ import { ContainerBase } from '../lib/component';
 import * as A from '../actions';
 import dialogTypes from './dialogs';
 
+
 class App extends ContainerBase {
 	componentWillMount() {
 		const { stores: { app }, services: { dispatcher } } = this.context;

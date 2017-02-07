@@ -6,25 +6,55 @@ import * as A from '../actions';
 const defaultView = {
 	id: 42,
 	title: "Ninja game",
-	step: A.STEP_SETUP,
+	step: A.STEP_CHOOSE_WHITES,
 	options: {
 		scoreLimit: 5,
 		sets: ["1ed"]
 	},
 	players: [
-		{ id: 1, name: "Uzimon", score: 0, isCzar: false, isPlaying: false, isWinner: false },
-		{ id: 2, name: "Anthony", score: 0, isCzar: false, isPlaying: false, isWinner: false },
-		{ id: 3, name: "Jose", score: 0, isCzar: false, isPlaying: false, isWinner: false },
-		{ id: 4, name: "bleh", score: 0, isCzar: false, isPlaying: false, isWinner: false }
+		{ id: 1, name: "Anthony", score: 3, isCzar: false, isPlaying: true, isWinner: false },
+		{ id: 2, name: "Uzimon", score: 3, isCzar: false, isPlaying: true, isWinner: false },
+		{ id: 3, name: "Jose", score: 1, isCzar: true, isPlaying: false, isWinner: false },
+		{ id: 4, name: "bleh", score: 2, isCzar: false, isPlaying: false, isWinner: false }
 	],
-	round: null,
+	messages: [
+		{ index: 1, name: "Uzimon", message: 'PING!!' },
+		{ index: 2, name: "Anthony", message: 'PING!!' },
+		{ index: 3, name: "Pig", message: 'Latin!!' }
+	],
+	round: {
+		blackCard: {
+			id: 1,
+			text: "Does something do something?",
+			set: '1ed',
+			whiteCardCount: 3
+		},
+		stacks: [
+			{ id: 1, cards: [{ id: 1, text: "Pig Latin?", set: 'whoa' }] },
+			{ id: 2, cards: [{ id: 2, text: "stuff and things", set: 'whoa' }] },
+			{ id: 3, cards: [{ id: 3, text: "Stimpy", set: 'haha' }] }
+		]
+	},
 	timer: null
 };
 
 const defaultPlayerView = {
 	id: 1,
-	hand: [],
-	stack: null
+	hand: [
+		{ id: 2, text: 'card 1', set: '1ed' },
+		{ id: 3, text: 'card 2', set: '1ed' },
+		{ id: 4, text: 'card 3', set: '1ed' },
+		{ id: 5, text: 'card 4', set: '1ed' },
+		{ id: 6, text: 'card 5', set: '1ed' },
+		{ id: 7, text: 'card 6', set: '1ed' },
+		{ id: 8, text: 'card 7', set: '1ed' }
+	],
+	stack: {
+		id: 2,
+		cards: [
+			{ id: 5, text: 'card 4', set: '1ed' }
+		]
+	}
 };
 
 export default class GameStore {

@@ -48,7 +48,8 @@ function createConfig(isDebug) {
 		plugins.push(
 			new webpack.optimize.DedupePlugin(),
 			new ExtractTextPlugin("[name].css"),
-			new webpack.optimize.UglifyJsPlugin({ compress: { warnings: false } })
+			new webpack.optimize.UglifyJsPlugin({ compress: { warnings: false } }),
+			new webpack.optimize.AggressiveMergingPlugin() //Merge chunks
 		);
 
 		loaders.css.loader = ExtractTextPlugin.extract("style", "css");
