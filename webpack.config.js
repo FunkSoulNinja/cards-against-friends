@@ -1,15 +1,15 @@
-const path = require("path");
-const _ = require("lodash");
-const webpack = require('webpack');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+var path = require("path"),
+	_ = require("lodash"),
+	webpack = require("webpack"),
+	ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 const vendor = [
 	"lodash",
-	'react',
-	'react-dom',
-	'react-router',
-	'socket.io-client',
-	'rxjs'
+	"react",
+	"react-dom",
+	"react-router",
+	"socket.io-client",
+	"rxjs"
 ];
 
 function createConfig(isDebug) {
@@ -43,13 +43,13 @@ function createConfig(isDebug) {
 			"react-hot-loader/patch",
 			"webpack-dev-server/client?http://localhost:8080/",
 			"webpack/hot/only-dev-server");
+
 		publicPath = "http://localhost:8080/build/";
 	} else {
 		plugins.push(
 			new webpack.optimize.DedupePlugin(),
 			new ExtractTextPlugin("[name].css"),
-			new webpack.optimize.UglifyJsPlugin({ compress: { warnings: false } }),
-			// new webpack.optimize.AggressiveMergingPlugin() //Merge chunks
+			new webpack.optimize.UglifyJsPlugin({compress: {warnings: false}})
 		);
 
 		loaders.css.loader = ExtractTextPlugin.extract("style", "css");
