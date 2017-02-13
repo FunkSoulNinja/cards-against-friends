@@ -3,7 +3,6 @@ import path from 'path';
 import rimraf from 'rimraf';
 import child_process from 'child_process';
 import webpack from 'webpack';
-import WebpackDevServer from 'webpack-dev-server';
 import webpackConfig from './webpack.config.js';
 
 
@@ -105,6 +104,7 @@ function buildClient(cb) {
 }
 
 function watchClient() {
+	const WebpackDevServer = require("webpack-dev-server");
 	const compiler = webpack(webpackConfig);
 	const server = new WebpackDevServer(compiler, {
 		publicPath: '/build/',
