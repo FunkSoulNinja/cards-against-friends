@@ -1,80 +1,42 @@
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable } from 'rxjs';
 import _ from 'lodash';
+import {createView$} from '../lib/stores';
 import { mapOp$ } from 'shared/observable';
 import * as A from '../actions';
 
 const defaultView = {
-	id: 42,
-	title: "Ninja game",
-	step: A.STEP_CHOOSE_WHITES,
-	options: {
-		scoreLimit: 5,
-		sets: ["1ed"]
-	},
-	players: [
-		{ id: 1, name: "Anthony", score: 3, isCzar: false, isPlaying: true, isWinner: false },
-		{ id: 2, name: "Uzimon", score: 3, isCzar: false, isPlaying: true, isWinner: false },
-		{ id: 3, name: "Jose", score: 1, isCzar: true, isPlaying: false, isWinner: false },
-		{ id: 4, name: "bleh", score: 2, isCzar: false, isPlaying: false, isWinner: false }
-	],
-	messages: [
-		{ index: 1, name: "Uzimon", message: 'PING!!' },
-		{ index: 2, name: "Anthony", message: 'PING!!' },
-		{ index: 3, name: "Pig", message: 'Latin!!' }
-	],
-	round: {
-		blackCard: {
-			id: 1,
-			text: "Does something do something?",
-			set: '1ed',
-			whiteCardCount: 3
-		},
-		stacks: [
-			{ id: 1, cards: [{ id: 1, text: "Pig Latin?", set: 'whoa' }] },
-			{ id: 2, cards: [{ id: 2, text: "stuff and things", set: 'whoa' }] },
-			{ id: 3, cards: [{ id: 3, text: "Stimpy", set: 'haha' }] }
-		]
-	},
+	id: null,
+	title: null,
+	step: A.STEP_DISPOSED,
+	options: {},
+	players: [],
+	messages: [],
+	round: null,
 	timer: null
 };
 
 const defaultPlayerView = {
-	id: 1,
-	hand: [
-		{ id: 2, text: 'card 1', set: '1ed' },
-		{ id: 3, text: 'card 2', set: '1ed' },
-		{ id: 4, text: 'card 3', set: '1ed' },
-		{ id: 5, text: 'card 4', set: '1ed' },
-		{ id: 6, text: 'card 5', set: '1ed' },
-		{ id: 7, text: 'card 6', set: '1ed' },
-		{ id: 8, text: 'card 7', set: '1ed' }
-	],
-	stack: {
-		id: 2,
-		cards: [
-			{ id: 5, text: 'card 4', set: '1ed' }
-		]
-	}
+	id: null,
+	hand: [],
+	stack: null
 };
 
 export default class GameStore {
-	constructor({ dispatcher }, user) {
+	constructor({ dispatcher, socket }, user) {
+		const passThroughAction = action => socket.emit("action", action);
 
 		dispatcher.onRequest({
-			[A.GAME_CREATE]: action => {
-				dispatcher.succeed(action);
-				dispatcher.succeed(A.gameJoin(42));
-			},
-			[A.GAME_JOIN]: action => dispatcher.succeed(action),
-			[A.GAME_SET_OPTIONS]: action => dispatcher.succeed(action),
-			[A.GAME_START]: action => dispatcher.succeed(action),
-			[A.GAME_SELECT_CARD]: action => dispatcher.succeed(action),
-			[A.GAME_SELECT_STACK]: action => dispatcher.succeed(action),
-			[A.GAME_SEND_MESSAGE]: action => dispatcher.succeed(action)
+			[A.GAME_CREATE]: passThroughAction,
+			[A.GAME_JOIN]: passThroughAction,
+			[A.GAME_SET_OPTIONS]: passThroughAction,
+			[A.GAME_START]: passThroughAction,
+			[A.GAME_SELECT_CARD]: passThroughAction,
+			[A.GAME_SELECT_STACK]: passThroughAction,
+			[A.GAME_SEND_MESSAGE]: passThroughAction
 		});
 
-		this.view$ = new BehaviorSubject(defaultView);
-		this.player$ = new BehaviorSubject(defaultPlayerView);
+		this.view$ = createView$(dispatcher, A.VIEW_GAME, defaultView);
+		this.player$ = createView$(dispatcher, A.VIEW_PLAYER, defaultPlayerView);
 
 		const isLoggedIn$ = user.details$.map(d => d.isLoggedIn);
 

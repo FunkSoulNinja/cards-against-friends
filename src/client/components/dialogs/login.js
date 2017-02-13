@@ -40,7 +40,10 @@ class LoginDialog extends ContainerBase {
 		return (
 			<section className="c-login-dialog">
 				<h1>Login</h1>
-				<form onSubmit={this._login} disabled={disabled}>
+				<form
+					onSubmit={this._login} 
+					onKeyDown={({key}) => key === 'Escape' ? this.dispatch(A.dialogSet(A.DIALOG_LOGIN, false)) : ''}
+					disabled={disabled}>
 					<div className="form-row">
 						<TextInput
 							placeholder="username"

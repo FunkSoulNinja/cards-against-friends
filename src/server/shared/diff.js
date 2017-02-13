@@ -10,10 +10,10 @@ export function makeDiff(before, after, location = "") {
 }
 
 export function makeDiffArray(before, after, location = "") {
-	if (before !== null && !_.isArray(before)) {
+	if (before != null && !_.isArray(before)) {
 		throw new Error(`${location}: you can't change the type of a value`);
 	}
-	if (before === null) {
+	if (before == null) {
 		return after;
 	}
 	if (after.length === 0) {
@@ -63,7 +63,7 @@ export function makeDiffArray(before, after, location = "") {
 			: { $splice: [spliceBegin, spliceCount, ...spliceAdd] };
 
 	} else {
-		let itemsBefore = before === null
+		let itemsBefore = before == null
 			? {}
 			: before.reduce((obj, item) => {
 				obj[item.id] = item;
@@ -78,7 +78,7 @@ export function makeDiffArray(before, after, location = "") {
 			let itemAfter = after[i];
 			idOrder.push(itemAfter.id);
 
-			if (before !== null && i < before.length && before[i].id === itemAfter.id) {
+			if (before != null && i < before.length && before[i].id === itemAfter.id) {
 				sameCount++;
 			}
 
@@ -104,7 +104,7 @@ export function makeDiffArray(before, after, location = "") {
 }
 
 export function makeDiffObject(before, after, location = "") {
-	if (before !== null && !_.isObject(before)) {
+	if (before != null && !_.isObject(before)) {
 		throw new Error(`${location}: you can't change the type of a value`);
 	}
 	const seen = {};
@@ -117,11 +117,11 @@ export function makeDiffObject(before, after, location = "") {
 
 		seen[key] = true;
 		const value = after[key];
-		if (before === null || !before.hasOwnProperty(key)) {
+		if (before == null || !before.hasOwnProperty(key)) {
 			obj[key] = value;
 			changed = true;
 		} else {
-			const result = makeDiff(before[key], value, `location.${key}`);
+			const result = makeDiff(before[key], value, `${location}.${key}`);
 			if (result !== IS_UNCHANGED) {
 				obj[key] = result;
 				changed = true;
@@ -129,7 +129,7 @@ export function makeDiffObject(before, after, location = "") {
 		}
 	}
 
-	if (before !== null) {
+	if (before != null) {
 		for (let key in before) {
 			if (!before.hasOwnProperty(key) || seen[key]) {
 				continue;
@@ -148,7 +148,7 @@ export function makeDiffScalar(before, after) {
 }
 
 export function mergeDiff(base, diff, location = "") {
-	if (diff === null) return null;
+	if (diff == null) return null;
 
 	if (diff.hasOwnProperty("$remove")) return undefined;
 
@@ -201,7 +201,7 @@ export function mergeDiff(base, diff, location = "") {
 	if (_.isArray(diff)) return diff;
 
 	if (_.isObject(diff)) {
-		if (base !== null && !_.isObject(base)) {
+		if (base != null && !_.isObject(base)) {
 			throw new Error(`${location}: you can't change the type of a value`);
 		}
 		if (!base) return diff;

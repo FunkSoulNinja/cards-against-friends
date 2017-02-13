@@ -16,7 +16,7 @@ export default function PlayerHand(props) {
 				{hand.map(card =>
 					<Card
 						key={card.id}
-						isSelectable={opSelectCard}
+						isSelectable={opSelectCard.can && !opSelectCard.inProgress}
 						onClick={() => selectCard(card)}
 						type="white"
 						card={card}

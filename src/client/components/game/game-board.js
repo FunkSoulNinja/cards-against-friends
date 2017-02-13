@@ -1,7 +1,6 @@
 import './game-board.scss';
 
 import React from 'react';
-import _ from 'lodash';
 import * as A from '../../actions';
 import { ContainerBase } from '../../lib/component';
 
@@ -25,10 +24,14 @@ export default class GameBoard extends ContainerBase {
 
 		this.state = { isHandOpen: false };
 
-		this._selectCard = card => this.request(A.gameSelectCard(this.state.game.id, card.id));
-		this._selectStack = stack => this.request(A.gameSelectStack(this.state.game.id, stack.id));
+		this._selectCard = card =>
+			this.request(A.gameSelectCard(this.state.game.id, card.id));
+			
+		this._selectStack = stack =>
+			this.request(A.gameSelectStack(this.state.game.id, stack.id));
 
-		this._toggleHand = () => this.setState({ isHandOpen: !this.state.isHandOpen });
+		this._toggleHand = () =>
+			this.setState({ isHandOpen: !this.state.isHandOpen });
 	}
 	componentWillMount() {
 		const { stores: { game } } = this.context;
@@ -54,8 +57,8 @@ export default class GameBoard extends ContainerBase {
 				break;
 
 			case A.STEP_JUDGE_STACKS:
-				messageIsActive = opSelectCard.can;
-				message = opSelectCard.can ? "select the winning cards!" : "waiting for the czar...";
+				messageIsActive = opSelectStack.can;
+				message = opSelectStack.can ? "select the winning cards!" : "waiting for the czar...";
 				break;
 
 			case A.STEP_WAIT:
