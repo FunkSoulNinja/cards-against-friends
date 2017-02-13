@@ -1,4 +1,3 @@
-import { Observable } from 'rxjs';
 import * as A from '../actions';
 import { Validator } from 'shared/validation';
 import { validateMessage } from 'shared/validation/chat';
