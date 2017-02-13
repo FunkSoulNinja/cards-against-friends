@@ -1,7 +1,7 @@
 var path = require("path"),
 	_ = require("lodash"),
 	webpack = require("webpack"),
-	ExtractTextPlugin = require("extract-text-webpack-plugin"),
+	ExtractTextPlugin = require("extract-text-webpack-plugin"); 
 
 const vendor = [
 	"lodash",
