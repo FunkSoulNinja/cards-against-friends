@@ -2,7 +2,6 @@ var path = require("path"),
 	_ = require("lodash"),
 	webpack = require("webpack"),
 	ExtractTextPlugin = require("extract-text-webpack-plugin"),
-	CompressionPlugin = require('compression-webpack-plugin');
 
 const vendor = [
 	"lodash",
@@ -51,13 +50,7 @@ function createConfig(isDebug) {
 			new webpack.optimize.DedupePlugin(),
 			new ExtractTextPlugin("[name].css"),
 			new webpack.optimize.UglifyJsPlugin({compress: {warnings: false}}),
-			new CompressionPlugin({
-				asset: "[path].gz[query]",
-				algorithm: "gzip",
-				test: /\.js$|\.css$|\.html$/,
-				threshold: 10240,
-				minRatio: 0.8
-			})
+			new webpack.optimize.AggressiveMergingPlugin() //Merge chunks
 		);
 
 		loaders.css.loader = ExtractTextPlugin.extract("style", "css");

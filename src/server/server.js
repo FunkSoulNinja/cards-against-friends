@@ -22,12 +22,6 @@ app.use(express.static("public"));
 const useExternalStyles = !isDevelopment;
 const scriptRoot = isDevelopment ? "http://localhost:8080/build" : "/build";
 
-app.get('*.js', function (req, res, next) {
-  req.url = req.url + '.gz';
-  res.set('Content-Encoding', 'gzip');
-  next();
-});
-
 app.get('*', (req, res) => {
 	res.render('index', {
 		useExternalStyles,
