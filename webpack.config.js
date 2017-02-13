@@ -51,7 +51,6 @@ function createConfig(isDebug) {
 			new webpack.optimize.DedupePlugin(),
 			new ExtractTextPlugin("[name].css"),
 			new webpack.optimize.UglifyJsPlugin({compress: {warnings: false}}),
-			new webpack.optimize.AggressiveMergingPlugin(), //Merge chunks
 			new CompressionPlugin({
 				asset: "[path].gz[query]",
 				algorithm: "gzip",
