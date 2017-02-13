@@ -26,12 +26,12 @@ function createConfig(isDebug) {
 	];
 
 	const loaders = {
-		js:	{ test: /\.jsx?$/, loader: "babel", exclude: /node_modules/ },
-		eslint: { test: /\.jsx?$/, loader: "eslint", exclude: /node_modules/ },
-		json: { test: /\.json$/, loader: "json" },
-		css: { test: /\.css$/, loader: "style!css?sourceMap" },
-		sass: { test: /\.scss$/, loader: "style!css?sourceMap!sass?sourceMap" },
-		files: { test: /\.(png|jpg|jpeg|gif|woff|ttf|eot|svg|woff2)/, loader: "url-loader?limit=5000" }
+		js:		{ test: /\.jsx?$/, loader: "babel", exclude: /node_modules/ },
+		eslint:	{ test: /\.jsx?$/, loader: "eslint", exclude: /node_modules/ },
+		json:	{ test: /\.json$/, loader: "json" },
+		css:	{ test: /\.css$/, loader: "style!css?sourceMap" },
+		sass:	{ test: /\.scss$/, loader: "style!css?sourceMap!sass?sourceMap" },
+		files:	{ test: /\.(png|jpg|jpeg|gif|woff|ttf|eot|svg|woff2)/, loader: "url-loader?limit=5000" }
 	};
 
 	const clientEntry = ["babel-polyfill", "./src/client/client.js"];
@@ -49,7 +49,7 @@ function createConfig(isDebug) {
 			new webpack.optimize.DedupePlugin(),
 			new ExtractTextPlugin("[name].css"),
 			new webpack.optimize.UglifyJsPlugin({ compress: { warnings: false } }),
-			new webpack.optimize.AggressiveMergingPlugin() //Merge chunks
+			// new webpack.optimize.AggressiveMergingPlugin() //Merge chunks
 		);
 
 		loaders.css.loader = ExtractTextPlugin.extract("style", "css");
@@ -82,5 +82,4 @@ function createConfig(isDebug) {
 }
 
 module.exports = createConfig(process.env.NODE_ENV !== "production");
-console.log('process.env.NODE_ENV=', process.env.NODE_ENV);
 module.exports.create = createConfig;
